@@ -15,4 +15,4 @@ app.geometry("1200x700")
 
 LoginView(app)
 
-app.mainloop()
+app.mainloop() 
