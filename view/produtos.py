@@ -4,7 +4,6 @@ from tkinter import messagebox
 from tkinter import ttk
 from tkcalendar import DateEntry
 
-
 from services.produto_service import ProductService
 
 
@@ -63,6 +62,11 @@ class ProductsView:
         # BOTÃO DE deletar
         delete_button = ctk.CTkButton(from_frame, text="Deletar", command=self.delete_products)
         delete_button.grid(row=6, column=0, columnspan=3, padx=10, pady=(0, 10), sticky="w")
+
+        # CAMPO DE PESQUISA
+        self.search_entry = ctk.CTkEntry(self.frame,placeholder_text="Pesquisar produto...", width=200)
+        self.search_entry.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+        self.search_entry.bind("<KeyRelease>",self.search_products)      
 
         #TABELA DE PRODUTOS
         self.produtos_table = ttk.Treeview(self.frame, 
@@ -148,3 +152,33 @@ class ProductsView:
         self.name_entry.delete(0, "end")
         self.preco_compra_entry.delete(0, "end")
         self.preco_venda_entry.delete(0, "end")
+
+    def search_products(self, event):
+
+        search_term = self.search_entry.get().lower()
+
+        # LIMPA TABELA
+        for item in self.produtos_table.get_children():
+            self.produtos_table.delete(item)
+
+        # BUSCA TODOS PRODUTOS
+        products = ProductService.get_products()
+
+        # FILTRA
+        filtered_products = []
+
+        for product in products:
+
+            product_name = product[1].lower()
+
+            if search_term in product_name:
+
+                filtered_products.append(product)
+
+        # REINSERE NA TABELA
+        for product in filtered_products:
+            self.produtos_table.insert(
+                "",
+                "end",
+                values=product
+            )

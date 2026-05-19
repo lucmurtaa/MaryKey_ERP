@@ -2,8 +2,11 @@ import customtkinter as ctk
 import view.dashboard as dashboard
 import view.clientes as clientes
 import view.produtos as produtos
+import view.vendas as vendas
+from view.clientes import ClientesView
 
 from view.produtos import ProductsView
+from view.vendas import VendasView
 
 class MainWindow:
     def __init__(self, app):
@@ -40,9 +43,16 @@ class MainWindow:
         clientes_btn = ctk.CTkButton(
             self.side_bar,
             text="Clientes",
-            command=self.show_clientes
+            command=self.carregar_clientes
         )
         clientes_btn.pack(pady=10)
+
+        vendas_btn = ctk.CTkButton(
+            self.side_bar,
+            text="Vendas",
+            command=self.carregar_vendas
+        )
+        vendas_btn.pack(pady=10)
 
         self.current_screen = None
         # TELA INICIAL
@@ -70,9 +80,16 @@ class MainWindow:
         view = ProductsView(self.content)
         view.frame.pack(fill="both", expand=True)
 
-    def show_clientes(self):
+    def carregar_clientes(self):
         print("Exibindo clientes")
         self.clear_content()
             
         view = clientes.ClientesView(self.content)
+        view.frame.pack(fill="both", expand=True)
+
+    def carregar_vendas(self):
+        print("Exibindo vendas")
+        self.clear_content()
+
+        view = VendasView(self.content)
         view.frame.pack(fill="both", expand=True)

@@ -1,4 +1,4 @@
-from database.connection import connect_BD 
+from database.connection import connect_BD
 
 class ProductService:
     @staticmethod
@@ -58,3 +58,65 @@ class ProductService:
             return True, "PRODUTO DELETADO COM SUCESSO"
     
         return False, "PRODUTO NÃO ENCONTRADO"
+    
+    @staticmethod
+    def expired_products():
+
+        conn = connect_BD()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        SELECT * FROM products
+        WHERE validade < DATE('now')
+        """)
+
+        products = cursor.fetchall()
+
+        conn.close()
+
+        return products
+    
+    @staticmethod
+    def expiring_products():
+
+        conn = connect_BD()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        SELECT * FROM products
+        WHERE validade <= DATE('now', '+30 day')
+        """)
+
+        products = cursor.fetchall()
+
+        conn.close()
+
+        return products
+
+    @staticmethod
+    def stock_value():
+
+        conn = connect_BD()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(SUM(preco_venda), 0)
+        FROM products
+        """)
+
+        value = cursor.fetchone()[0]
+
+        conn.close()
+
+        return value
+
+    @staticmethod
+    def total_products():
+        conn = connect_BD()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM products")
+        total = cursor.fetchone()[0]
+        conn.close()
+
+        return total
+    

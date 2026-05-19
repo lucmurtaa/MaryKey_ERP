@@ -35,11 +35,20 @@ def create_tables():
     CREATE TABLE IF NOT EXISTS vendas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         client_id INTEGER,
+        product_id INTEGER,
         total REAL,
         forma_pagamento TEXT,
         data_venda TEXT
     )
     """)
 
+    cursor.execute("PRAGMA table_info(vendas)")
+    vendas_columns = [column[1] for column in cursor.fetchall()]
+
+    if "product_id" not in vendas_columns:
+        cursor.execute("ALTER TABLE vendas ADD COLUMN product_id INTEGER")
+
     conn.commit()
     conn.close()
+
+    
